@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=decice-width">
+</head>
+
+<body>
+    <script type="module">
+        import { fetchJSON } from "https://js.sabae.cc/fetchJSON.js";
+        window.onload = async () => {
+            const data = await fetchJSON("api/test");
+            alert(data)
+            console.log(data);
+        };
+    </script>
+</body>
+
+</html>
