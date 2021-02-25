@@ -1,10 +1,25 @@
 import { Server } from "http://js.sabae.cc/Server.js"
 
 class MyServer extends Server {
-    api(path) {
-        const list = [];
-        list.push("abc")
-        return { name: "jigintern", path: path, list: list[0] };
+    api(path, req) {
+        // YouTubeの再生リストを追加する。
+        console.log(path);
+        if (path === "/api/addplaylist/") {
+            let listjson = JSON.parse(Deno.readTextFileSync('./playlist.json'));
+            // 重複を確認する
+            const listDuplicate = listjson.find(data => data.url === req.url);
+            // なければ追加、あれば「存在する」と返す
+            if (listDuplicate === undefined) {
+                listjson.push({
+                    "created_at": Date.now(),
+                    "url": req.url
+                })
+                Deno.writeTextFile("playlist.json", JSON.stringify(listjson));
+                return { res: "OK" };
+            } else {
+                return { res: "existed" };
+            }
+        }
     }
 }
 
