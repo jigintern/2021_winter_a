@@ -3,7 +3,7 @@ import { Server } from "http://js.sabae.cc/Server.js"
 class MyServer extends Server {
     api(path, req) {
         // YouTubeの再生リストを追加する。
-        if (path === "/api/addplaylist/") {
+        if (path === "/api/add-playlist/") {
             let listjson = JSON.parse(Deno.readTextFileSync('./playlist.json'));
             // 重複を確認する。
             const listDuplicate = listjson.find(data => data.url === req.url);
