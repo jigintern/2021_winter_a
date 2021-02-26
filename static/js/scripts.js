@@ -3,9 +3,13 @@
 import { fetchJSON } from "https://js.sabae.cc/fetchJSON.js";
 
 window.onload = async () => {
-    const data = await fetchJSON("api/get-playlist/");
-    console.log(data);
+    let data = await fetchJSON("api/get-playlist/");
+    for (let key in data) {
+        getYoutubePlaylist(data[key].url)
+    }
+};
 
+function getYoutubePlaylist(listid) {
     $.ajax({
         type: 'get',
         url: 'https://www.googleapis.com/youtube/v3/playlistItems', // リクエストURL
@@ -13,25 +17,27 @@ window.onload = async () => {
         data: {
             // partは必須で指定が必要とのこと。レスポンスで返してもらいたいデータをカンマ区切りで指定する。snippetがあればとりあえず動画を再生するレスポンスが受け取れる。
             part: 'snippet',
-             // 再生リストID
-            playlistId: 'PLaHghXmoJ5Vb7CzgxyID4fn5DFmDmNV0m',
+            // 再生リストID
+            playlistId: listid,
             // デフォルトは5件までしか受け取らないので、取得件数を変更
             // maxResults: 20, 
             // API Key
             key: 'AIzaSyC2mcQmPFUnEaGTIO9T6SQqn8zl1aqr_9Y'
         }
-    }).done(function (response) {
+    }).done(response => {
         // 成功
-        response.items.forEach(function (item) {
-            console.log("成功！")
-            var id = item.snippet.resourceId.videoId;
-            console.log(id)
-            $('#list').append('<iframe src="https://www.youtube.com/embed/' + id + '" frameborder="0" allowfullscreen></iframe>');
+        const listdiv = document.createElement("div");
+        listdiv.className = "list"; // .list
+        main.appendChild(listdiv);
+        const iframes = response.items.map(item => {
+            const id = item.snippet.resourceId.videoId;
+            return '<iframe src="https://www.youtube.com/embed/' + id + '" frameborder="0" allowfullscreen></iframe>';
         });
-    }).fail(function () {
+        listdiv.innerHTML = iframes.join("");
+    }).fail(() => {
         // エラー
     });
-};
+}
 
 let imgNumber = 0;
 document.querySelectorAll('.scroll').forEach(elm => {

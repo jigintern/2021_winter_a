@@ -3,6 +3,17 @@ import { Server } from "http://js.sabae.cc/Server.js";
 class MyServer extends Server {
 
     api(path, req) {
+        // URLのパラメーター取得する
+        function getParam(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
         // YouTubeの再生リストを追加する。
         if (path === "/api/add-playlist/") {
             let listjson = JSON.parse(Deno.readTextFileSync('./playlist.json'));
@@ -22,21 +33,11 @@ class MyServer extends Server {
                 return { res: "exist" };
             }
         }
+
         // 保存されているYouTubeの再生リストを取得する。
         if (path === "/api/get-playlist/") {
-            const listjson = JSON.parse(Deno.readTextFileSync('./playlist.json'));
+            let listjson = JSON.parse(Deno.readTextFileSync('./playlist.json'));
             return listjson
-        }
-
-        // URLのパラメーター取得する
-        function getParam(name, url) {
-            if (!url) url = window.location.href;
-            name = name.replace(/[\[\]]/g, "\\$&");
-            let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-                results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, " "));
         }
     }
 }
