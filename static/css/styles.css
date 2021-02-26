@@ -16,10 +16,8 @@ body {
 
 .title {
   padding-top: 30px;
-  height:20px;
-  width:450px;
-  display: table-cell;
-  border-bottom: solid 3px #87CEFA;
+  width: auto;
+  border-bottom: solid 3px #87cefa;
   vertical-align: middle;
   text-align: center;
 }
@@ -27,6 +25,10 @@ body {
 .list {
   margin-top: 30px;
   margin-bottom: 12px;
+}
+
+.url {
+  width: 300px;
 }
 
 .toukou {
