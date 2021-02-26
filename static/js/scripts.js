@@ -39,6 +39,13 @@ function getYoutubePlaylist(listid) {
     });
 }
 
+const button = document.getElementById('send');
+const urlTextBox = document.getElementById('input-url');
+button.onclick = addYoutubeURL;
+function addYoutubeURL() {
+    fetchJSON("/api/add-playlist/", urlTextBox.value);
+}
+
 let imgNumber = 0;
 document.querySelectorAll('.scroll').forEach(elm => {
     elm.onscroll = function () {
