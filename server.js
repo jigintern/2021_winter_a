@@ -35,7 +35,7 @@ class MyServer extends Server {
         }
 
         // 保存されているYouTubeの再生リストを取得する。
-        if (path === "/api/get-playlist/") {
+        if (path === "/api/get-playlist") {
             let listjson = JSON.parse(Deno.readTextFileSync('./playlist.json'));
             return listjson
         }
