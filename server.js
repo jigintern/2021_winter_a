@@ -1,6 +1,7 @@
-import { Server } from "http://js.sabae.cc/Server.js"
+import { Server } from "http://js.sabae.cc/Server.js";
 
 class MyServer extends Server {
+
     api(path, req) {
         // YouTubeの再生リストを追加する。
         if (path === "/api/add-playlist/") {
