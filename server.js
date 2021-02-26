@@ -19,6 +19,11 @@ class MyServer extends Server {
                 return { res: "exist" };
             }
         }
+        // 保存されているYouTubeの再生リストを取得する。
+        if (path === "/api/get-playlist/") {
+            const listjson = JSON.parse(Deno.readTextFileSync('./playlist.json'));
+            return listjson
+        }
     }
 }
 
