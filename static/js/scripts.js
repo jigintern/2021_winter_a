@@ -3,7 +3,7 @@
 import { fetchJSON } from "https://js.sabae.cc/fetchJSON.js";
 
 window.onload = async () => {
-    let data = await fetchJSON("api/get-playlist/");
+    let data = await fetchJSON("/api/get-playlist");
     for (let key in data) {
         getYoutubePlaylist(data[key].url)
     }
@@ -22,7 +22,7 @@ function getYoutubePlaylist(listid) {
             // デフォルトは5件までしか受け取らないので、取得件数を変更
             // maxResults: 20, 
             // API Key
-            key: 'AIzaSyC2mcQmPFUnEaGTIO9T6SQqn8zl1aqr_9Y'
+            key: ''
         }
     }).done(response => {
         // 成功
