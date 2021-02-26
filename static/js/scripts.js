@@ -18,7 +18,7 @@ window.onload = async () => {
             // デフォルトは5件までしか受け取らないので、取得件数を変更
             // maxResults: 20, 
             // API Key
-            key: ''
+            key: 'AIzaSyC2mcQmPFUnEaGTIO9T6SQqn8zl1aqr_9Y'
         }
     }).done(function (response) {
         // 成功
