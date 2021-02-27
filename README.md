@@ -8,7 +8,7 @@ YouTube Data APIのAPIキーが必要です。
 
 https://console.developers.google.com/
 
-取得し終わったら、`js/scripts.js` の `getYoutubePlaylist()` の `key` に貼り付けてください。
+取得し終わったら、ファイル `apikey.txt` を作成し、貼り付けてください。
 
 ## 使用方法
 
