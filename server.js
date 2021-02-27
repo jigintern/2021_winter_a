@@ -1,39 +1,43 @@
 import { Server } from "http://js.sabae.cc/Server.js";
 
-const API_KEY = Deno.readTextFileSync("apikey.txt").trim();
-
-const getYoutubePlaylist = async (listid) => {
-    // https://developers.google.com/youtube/v3/docs/playlistItems?hl=ja
-    const baseurl = "https://www.googleapis.com/youtube/v3/playlistItems";
-    const maxResults = 50; // max 50 (default 5)
-    const url = `${baseurl}?part=snippet&playlistId=${listid}&maxResults=${maxResults}&key=${API_KEY}`;
-    const response = await (await fetch(url)).json();
-    const videoids = response.items.map(item => item.snippet.resourceId.videoId);
-    return videoids;
-};
-
 class MyServer extends Server {
-    async api(path, req) {
-        // YouTubeの再生リストを追加する
+
+    api(path, req) {
+        // URLのパラメーター取得する
+        function getParam(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        // YouTubeの再生リストを追加する。
         if (path === "/api/add-playlist/") {
-            const listjson = JSON.parse(Deno.readTextFileSync('./static/playlist.json'));
+            let listjson = JSON.parse(Deno.readTextFileSync('./playlist.json'));
             // URLから再生リストのIDを取得する。
-            const listid = req; //getParam('list', req.url);
+            let listid = getParam('list', req.url);
             // 重複を確認する。
             const listDuplicate = listjson.find(data => data.url === listid);
             // 重複がなければ追加して「OK」、あれば「exist(存在する)」と返す。
             if (listDuplicate === undefined) {
-                const videoids = await getYoutubePlaylist(listid);
                 listjson.push({
                     "created_at": Date.now(),
-                    "url": listid,
-                    videoids
-                });
+                    "url": listid
+                })
                 Deno.writeTextFile("playlist.json", JSON.stringify(listjson));
                 return { res: "OK" };
             } else {
                 return { res: "exist" };
             }
+        }
+
+        // 保存されているYouTubeの再生リストを取得する。
+        if (path === "/api/get-playlist") {
+            let listjson = JSON.parse(Deno.readTextFileSync('./playlist.json'));
+            return listjson
         }
     }
 }

@@ -1,35 +1,50 @@
+"use strict"
+
 import { fetchJSON } from "https://js.sabae.cc/fetchJSON.js";
 
 window.onload = async () => {
-    const data = await fetchJSON("./playlist.json");
-    console.log(data);
-    for (const item of data) {
-        const listdiv = document.createElement("div");
-        listdiv.className = "list"; // .list
-        main.appendChild(listdiv);
-        const iframes = item.videoids.map(id => {
-            return '<iframe src="https://www.youtube.com/embed/' + id + '" frameborder="0" allowfullscreen></iframe>';
-        });
-        listdiv.innerHTML = iframes.join("");
+    let data = await fetchJSON("/api/get-playlist");
+    for (let key in data) {
+        getYoutubePlaylist(data[key].url)
     }
 };
 
-send.onclick = async () => {
-    const id = (() => {
-        const val = urlTextBox.value;
-        const n = val.indexOf("list=");
-        if (n < 0) {
-            return val;
+function getYoutubePlaylist(listid) {
+    $.ajax({
+        type: 'get',
+        url: 'https://www.googleapis.com/youtube/v3/playlistItems', // リクエストURL
+        dataType: 'json',
+        data: {
+            // partは必須で指定が必要とのこと。レスポンスで返してもらいたいデータをカンマ区切りで指定する。snippetがあればとりあえず動画を再生するレスポンスが受け取れる。
+            part: 'snippet',
+            // 再生リストID
+            playlistId: listid,
+            // デフォルトは5件までしか受け取らないので、取得件数を変更
+            // maxResults: 20, 
+            // API Key
+            key: ''
         }
-        return val.substring(n + 5);
-    })();
-    try {
-        await fetchJSON("/api/add-playlist/", id);
-        alert("登録完了!");
-    } catch (e) {
-        alert("登録失敗!" + e);
-    }
-};
+    }).done(response => {
+        // 成功
+        const listdiv = document.createElement("div");
+        listdiv.className = "list"; // .list
+        main.appendChild(listdiv);
+        const iframes = response.items.map(item => {
+            const id = item.snippet.resourceId.videoId;
+            return '<iframe src="https://www.youtube.com/embed/' + id + '" frameborder="0" allowfullscreen></iframe>';
+        });
+        listdiv.innerHTML = iframes.join("");
+    }).fail(() => {
+        // エラー
+    });
+}
+
+const button = document.getElementById('send');
+const urlTextBox = document.getElementById('input-url');
+button.onclick = addYoutubeURL;
+function addYoutubeURL() {
+    fetchJSON("/api/add-playlist/", urlTextBox.value);
+}
 
 let imgNumber = 0;
 document.querySelectorAll('.scroll').forEach(elm => {
