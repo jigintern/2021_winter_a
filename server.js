@@ -1,6 +1,6 @@
 import { Server } from "http://js.sabae.cc/Server.js";
 
-const API_KEY = Deno.readTextFileSync("apikey.txt").trim();
+const API_KEY = Deno.readTextFileSync("./apikey.txt").trim();
 
 const getYoutubePlaylist = async (listid) => {
     // https://developers.google.com/youtube/v3/docs/playlistItems?hl=ja
@@ -29,7 +29,7 @@ class MyServer extends Server {
                     "url": listid,
                     videoids
                 });
-                Deno.writeTextFile("playlist.json", JSON.stringify(listjson));
+                Deno.writeTextFile("./static/playlist.json", JSON.stringify(listjson));
                 return { res: "OK" };
             } else {
                 return { res: "exist" };
